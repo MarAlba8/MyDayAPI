@@ -1,0 +1,36 @@
+# Virtual environments
+venv/
+.venv/
+env/
+ENV/
+
+# Compiled Python files
+*.pyc
+__pycache__/
+
+# Build artifacts
+build/
+dist/
+*.egg-info/
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# IDE/Editor specific files
+.vscode/
+.idea/
+
+# Database files
+db.sqlite3
+
+# Sensitive configuration files
+local_settings.py
+.env
+
+# Test/coverage reports
+htmlcov/
+.coverage
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/

@@ -4,10 +4,10 @@ from pydantic import BaseModel
 
 
 class PostSchema(BaseModel):
-     title: str
-     publication_date: date
-     story: str 
-     # images: 
+    title: str
+    publication_date: date
+    story: str
+    # images:
 
-     class Config:
+    class Config:
         from_attributes = True
