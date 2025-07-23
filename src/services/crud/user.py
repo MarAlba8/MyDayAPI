@@ -4,14 +4,21 @@ from sqlalchemy import select
 from sqlalchemy.exc import NoResultFound
 
 from database.models.user import User
+from services.auth import UserManager
+from schemas.user import UserSchema
 
 
 class UserService:
     def __init__(self, session):
         self.session = session
 
-    def create(self, user):
+    def create(self, user: UserSchema):
         logger.info("Creating user")
+
+        user_manager = UserManager()
+        hashed_password = user_manager.hash_password(password=user.password)
+        user.password = hashed_password
+
         user = User(**user.model_dump())
         self.session.add(user)
         self.session.commit()
