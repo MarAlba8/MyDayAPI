@@ -4,14 +4,14 @@ from sqlalchemy import select
 from sqlalchemy.exc import NoResultFound
 
 from database.models.post import Post
-from schemas.post import PostSchema
+from schemas.post import PostDBSchema
 
 
 class PostService:
     def __init__(self, session):
         self.session = session
 
-    def create(self, post: PostSchema):
+    def create(self, post: PostDBSchema):
         logger.info("Creating post")
         post = Post(**post.model_dump())
         self.session.add(post)

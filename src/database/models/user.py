@@ -1,7 +1,7 @@
 from datetime import date
 import uuid
 from sqlalchemy import UUID, Date, String
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from database.models.base import Base
 
@@ -18,6 +18,7 @@ class User(Base):
     )  ##TODO: add unique constraint in DB
     password: Mapped[str] = mapped_column(String(30), nullable=False)
     born_date: Mapped[date] = mapped_column(Date, nullable=True)
+    post: Mapped["Post"] = relationship(back_populates="owner")  # noqa: F821
 
     def __repr__(self):
         return f"User(id={self.id}, name={self.name}, email={self.emai})"

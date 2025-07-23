@@ -12,6 +12,8 @@ from sqlalchemy.orm.session import Session
 from core.config import settings
 from database.models.user import User
 from schemas.auth import TokenData
+from database.database import get_db_session
+from schemas.user import UserDBSchema
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
@@ -60,7 +62,10 @@ class JWTManager:
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 
-def get_current_user(session, token: Annotated[str, Depends(oauth2_scheme)]):
+def get_current_user(
+    token: Annotated[str, Depends(oauth2_scheme)],
+    session: Session = Depends(get_db_session),
+):
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",
@@ -71,15 +76,16 @@ def get_current_user(session, token: Annotated[str, Depends(oauth2_scheme)]):
         payload = jwt.decode(
             token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM]
         )
-        email = payload.get("sub")
+        email = payload.get("email")
         if not email:
             raise credentials_exception
         token_data = TokenData(email=email)
-    except InvalidTokenError:
+    except InvalidTokenError as e:
+        credentials_exception.detail = e.args[0]
         raise credentials_exception
 
     user_manager = UserManager(session)
     user = user_manager.get_user(email=token_data.email)
     if not user:
         raise credentials_exception
-    return user
+    return UserDBSchema.model_validate(user)
